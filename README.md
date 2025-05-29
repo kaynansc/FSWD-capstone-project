@@ -11,6 +11,22 @@ Event sites like Meetup are helpful, but they mostly focus on one-time events an
 
 ---
 
+## 🧭 Big Picture (High-Level Architecture)
+
+The diagram below illustrates the overall system architecture, including the interaction between the frontend, backend, database, and deployment services.
+
+![High-Level Architecture](./docs/big-picture.png)
+
+Key components:
+- **Frontend**: React + Tailwind, runs in the browser, calls backend APIs.
+- **Backend**: Node.js (Fastify) handles business logic and API endpoints.
+- **Database**: PostgreSQL managed via Prisma ORM, hosted on Supabase.
+- **Authentication**: JWT-based auth flows between frontend and backend.
+- **Hosting**: Deployed on AWS (EC2 for backend/frontend, S3 for static assets).
+- **CI/CD**: GitHub Actions for build/test/deploy.
+
+---
+
 ## 🛠 Technology Stack
 
 ### Frontend
