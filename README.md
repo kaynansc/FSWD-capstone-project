@@ -266,7 +266,7 @@ This section defines the API endpoints, request/response formats, and authorizat
 
 #### 4.2. Create a New Community
 *   **Endpoint:** `POST /communities`
-*   **Description:** Allows an authenticated user to create a new community. The creator becomes an organizer.
+*   **Description:** Organizer of this Community / Admin.
 *   **Authorization:** Authenticated User
 *   **Request Body:**
     ```json
