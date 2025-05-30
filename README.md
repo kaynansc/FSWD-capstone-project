@@ -87,7 +87,6 @@ This section defines the API endpoints, request/response formats, and authorizat
 *   **Base URL:** `/api` (All endpoints below will be prefixed with this)
 *   **Authentication:** JWT (JSON Web Token) sent in the `Authorization` header as `Bearer <token>`.
 *   **Request/Response Format:** JSON
-*   **HTTP Status Codes:**
 *   **Error Response Format:**
     ```json
     {
