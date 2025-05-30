@@ -88,14 +88,6 @@ This section defines the API endpoints, request/response formats, and authorizat
 *   **Authentication:** JWT (JSON Web Token) sent in the `Authorization` header as `Bearer <token>`.
 *   **Request/Response Format:** JSON
 *   **HTTP Status Codes:**
-    *   `200 OK`: Successful GET, PUT, PATCH request.
-    *   `201 Created`: Successful POST request (resource created).
-    *   `204 No Content`: Successful DELETE request or successful PUT/PATCH with no body returned.
-    *   `400 Bad Request`: Invalid request payload or parameters.
-    *   `401 Unauthorized`: Missing or invalid authentication token.
-    *   `403 Forbidden`: Authenticated user does not have permission to access the resource.
-    *   `404 Not Found`: Resource not found.
-    *   `500 Internal Server Error`: Server-side error.
 *   **Error Response Format:**
     ```json
     {
