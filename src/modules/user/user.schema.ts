@@ -6,7 +6,11 @@ export const createUserSchema = z.object({
   password: z.string().min(6)
 })
 
-export const updateUserSchema = createUserSchema.partial()
+export const updateUserProfileSchema = z.object({
+  name: z.string().min(3).optional(),
+  bio: z.string().optional(),
+  interests: z.array(z.string().uuid()).optional()
+})
 
 export type CreateUserInput = z.infer<typeof createUserSchema>
-export type UpdateUserInput = z.infer<typeof updateUserSchema> 
+export type UpdateUserProfileInput = z.infer<typeof updateUserProfileSchema> 

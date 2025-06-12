@@ -1,14 +1,16 @@
 import { FastifyInstance } from 'fastify'
 import { UserUseCase } from './user.usecase'
 import { UserRepository } from './user.repository'
-import { createUserSchema, updateUserSchema } from './user.schema'
+import { createUserSchema, updateUserProfileSchema, CreateUserInput, UpdateUserProfileInput } from './user.schema'
 import { zodToJsonSchema } from 'zod-to-json-schema'
+import { authenticate } from '../auth/auth.middleware'
 
 export async function userRoutes(app: FastifyInstance) {
   const repository = new UserRepository()
   const useCase = new UserUseCase(repository)
 
-  app.post('/', {
+  // Public routes
+  app.post<{ Body: CreateUserInput }>('/', {
     schema: {
       body: zodToJsonSchema(createUserSchema)
     }
@@ -18,26 +20,27 @@ export async function userRoutes(app: FastifyInstance) {
     return reply.status(201).send(user)
   })
 
-  app.get('/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
-    const user = await useCase.getUserById(id)
-    return reply.send(user)
-  })
+  // Protected routes
+  app.register(async function (app) {
+    app.addHook('onRequest', authenticate)
 
-  app.put('/:id', {
-    schema: {
-      body: zodToJsonSchema(updateUserSchema)
-    }
-  }, async (request, reply) => {
-    const { id } = request.params as { id: string }
-    const data = request.body
-    const user = await useCase.updateUser(id, data)
-    return reply.send(user)
-  })
+    // Get current user profile
+    app.get('/me', async (request, reply) => {
+      const userId = (request.user as { id: string }).id
+      const profile = await useCase.getCurrentUserProfile(userId)
+      return reply.send(profile)
+    })
 
-  app.delete('/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
-    await useCase.deleteUser(id)
-    return reply.status(204).send()
+    // Update current user profile
+    app.put<{ Body: UpdateUserProfileInput }>('/me', {
+      schema: {
+        body: zodToJsonSchema(updateUserProfileSchema)
+      }
+    }, async (request, reply) => {
+      const userId = (request.user as { id: string }).id
+      const data = request.body
+      const profile = await useCase.updateCurrentUserProfile(userId, data)
+      return reply.send(profile)
+    })
   })
 } 

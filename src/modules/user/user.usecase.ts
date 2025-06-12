@@ -1,32 +1,72 @@
+import { hash } from 'bcrypt'
 import { UserRepository } from './user.repository'
-import { CreateUserInput, UpdateUserInput } from './user.schema'
+import { CreateUserInput, UpdateUserProfileInput } from './user.schema'
+import { NotFoundError } from '@/shared/errors/app-error'
 
 export class UserUseCase {
-  constructor(private repository: UserRepository) {}
+  constructor(private userRepository: UserRepository) {}
 
   async createUser(data: CreateUserInput) {
-    const existingUser = await this.repository.findByEmail(data.email)
+    const existingUser = await this.userRepository.findByEmail(data.email)
     if (existingUser) {
       throw new Error('User already exists')
     }
-    return this.repository.create(data)
+
+    const hashedPassword = await hash(data.password, 10)
+    const userData = {
+      ...data,
+      password: hashedPassword,
+      roleId: process.env.DEFAULT_ROLE_ID || 'user-role-id' // You should set this in your .env
+    }
+
+    return this.userRepository.create(userData)
   }
 
   async getUserById(id: string) {
-    const user = await this.repository.findById(id)
+    const user = await this.userRepository.findById(id)
     if (!user) {
       throw new Error('User not found')
     }
     return user
   }
 
-  async updateUser(id: string, data: UpdateUserInput) {
-    await this.getUserById(id)
-    return this.repository.update(id, data)
-  }
-
   async deleteUser(id: string) {
     await this.getUserById(id)
-    return this.repository.delete(id)
+    return this.userRepository.delete(id)
+  }
+
+  async getCurrentUserProfile(userId: string) {
+    const user = await this.userRepository.findById(userId)
+    if (!user) {
+      throw new NotFoundError('User not found')
+    }
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      bio: user.bio,
+      interests: user.interests.map(interest => interest.categoryId),
+      role: user.role.name,
+      createdAt: user.createdAt
+    }
+  }
+
+  async updateCurrentUserProfile(userId: string, data: UpdateUserProfileInput) {
+    const user = await this.userRepository.findById(userId)
+    if (!user) {
+      throw new NotFoundError('User not found')
+    }
+
+    const updatedUser = await this.userRepository.update(userId, data)
+    return {
+      id: updatedUser.id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      bio: updatedUser.bio,
+      interests: updatedUser.interests.map(interest => interest.categoryId),
+      role: updatedUser.role.name,
+      updatedAt: updatedUser.updatedAt
+    }
   }
 } 
