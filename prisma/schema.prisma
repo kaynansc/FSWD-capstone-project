@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id           String           @id @default(uuid())
+  name         String           @db.VarChar(100)
+  email        String           @unique @db.VarChar(150)
+  password     String           @db.VarChar(255)
+  bio          String?
+  role         Role             @relation(fields: [roleId], references: [id])
+  roleId       String
+  interests    UserInterest[]
+  memberships  Membership[]
+  events       EventParticipant[]
+  communities  Community[]      @relation("OrganizerCommunities")
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+}
+
+model Role {
+  id          String   @id @default(uuid())
+  name        String   @unique @db.VarChar(50)
+  description String?  @db.VarChar(255)
+  users       User[]
+}
+
+model Category {
+  id          String           @id @default(uuid())
+  name        String           @unique @db.VarChar(100)
+  description String?          @db.VarChar(255)
+  interests   UserInterest[]
+  communities Community[]
+}
+
+model UserInterest {
+  id         String   @id @default(uuid())
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  category   Category @relation(fields: [categoryId], references: [id])
+  categoryId String
+}
+
+model Community {
+  id           String           @id @default(uuid())
+  name         String           @db.VarChar(100)
+  description  String
+  category     Category         @relation(fields: [categoryId], references: [id])
+  categoryId   String
+  location     String           @db.VarChar(255)
+  latitude     Float
+  longitude    Float
+  organizer    User             @relation("OrganizerCommunities", fields: [organizerId], references: [id])
+  organizerId  String
+  events       Event[]
+  memberships  Membership[]
+  createdAt    DateTime         @default(now())
+}
+
+model Event {
+  id           String             @id @default(uuid())
+  title        String             @db.VarChar(100)
+  description  String
+  date         DateTime
+  location     String             @db.VarChar(255)
+  community    Community          @relation(fields: [communityId], references: [id])
+  communityId  String
+  participants EventParticipant[]
+}
+
+model Membership {
+  id           String   @id @default(uuid())
+  community    Community @relation(fields: [communityId], references: [id])
+  communityId  String
+  user         User     @relation(fields: [userId], references: [id])
+  userId       String
+  joinedAt     DateTime @default(now())
+}
+
+model EventParticipant {
+  id        String   @id @default(uuid())
+  event     Event    @relation(fields: [eventId], references: [id])
+  eventId   String
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+  rsvpAt    DateTime @default(now())
+}

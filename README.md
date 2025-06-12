@@ -243,11 +243,11 @@ This section defines the API endpoints, request/response formats, and authorizat
           "name": "Vancouver Brazilian Church",
           "description": "A welcoming church for the Brazilian community.",
           "categoryId": "uuid-category-1",
-          "categoryName": "Churches", // Denormalized for convenience
+          "categoryName": "Churches",
           "location": { "lat": 49.2827, "lon": -123.1207, "address": "123 Main St, Vancouver" },
           "organizerId": "uuid-user-organizer-1",
           "bannerImageUrl": "url/to/image.jpg",
-          "memberCount": 50 // Example derived data
+          "memberCount": 50 
         }
         // ... more communities
       ],
