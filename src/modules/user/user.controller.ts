@@ -6,8 +6,8 @@ import { zodToJsonSchema } from 'zod-to-json-schema'
 import { authenticate } from '../auth/auth.middleware'
 
 export async function userRoutes(app: FastifyInstance) {
-  const repository = new UserRepository()
-  const useCase = new UserUseCase(repository)
+  const userRepository = new UserRepository()
+  const userUseCase = new UserUseCase(userRepository)
 
   // Public routes
   app.post<{ Body: CreateUserInput }>('/', {
@@ -16,7 +16,7 @@ export async function userRoutes(app: FastifyInstance) {
     }
   }, async (request, reply) => {
     const data = request.body
-    const user = await useCase.createUser(data)
+    const user = await userUseCase.createUser(data)
     return reply.status(201).send(user)
   })
 
@@ -27,7 +27,7 @@ export async function userRoutes(app: FastifyInstance) {
     // Get current user profile
     app.get('/me', async (request, reply) => {
       const userId = (request.user as { id: string }).id
-      const profile = await useCase.getCurrentUserProfile(userId)
+      const profile = await userUseCase.getCurrentUserProfile(userId)
       return reply.send(profile)
     })
 
@@ -39,7 +39,7 @@ export async function userRoutes(app: FastifyInstance) {
     }, async (request, reply) => {
       const userId = (request.user as { id: string }).id
       const data = request.body
-      const profile = await useCase.updateCurrentUserProfile(userId, data)
+      const profile = await userUseCase.updateCurrentUserProfile(userId, data)
       return reply.send(profile)
     })
   })
