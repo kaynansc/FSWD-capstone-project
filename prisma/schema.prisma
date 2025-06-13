@@ -69,6 +69,8 @@ model Event {
   description  String
   date         DateTime
   location     String             @db.VarChar(255)
+  latitude     Float
+  longitude    Float
   community    Community          @relation(fields: [communityId], references: [id])
   communityId  String
   participants EventParticipant[]
