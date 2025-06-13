@@ -1,0 +1,819 @@
+{
+	"info": {
+		"_postman_id": "beb2ce96-e80e-4657-9a63-e4ed19a54f64",
+		"name": "Find a Community API",
+		"description": "Postman Collection for the 'Find a Community' project, generated based on the project's README.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "44542044"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "User Registration",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Kaynan Camargo\",\n  \"email\": \"kaynansc@gmail.com\",\n  \"password\": \"securePassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"register"
+							]
+						},
+						"description": "Creates a new user account."
+					},
+					"response": []
+				},
+				{
+					"name": "User Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"if (response.token) {",
+									"    pm.collectionVariables.set(\"jwt_token\", response.token);",
+									"    console.log(\"JWT Token saved to collection variable.\");",
+									"}",
+									"if (response.userId) {",
+									"    pm.collectionVariables.set(\"userId\", response.userId);",
+									"    console.log(\"User ID saved to collection variable: \" + response.userId);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{emailUserNormal}}\",\n  \"password\": \"{{passwordUserNormal}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticates a user and returns a JWT. The script automatically saves the token to the `jwt_token` collection variable."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints related to user authentication."
+		},
+		{
+			"name": "2. Users",
+			"item": [
+				{
+					"name": "Get Current User Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						},
+						"description": "Retrieves the profile of the currently authenticated user."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Current User Profile",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Kaynan Sampaio\",\n  \"bio\": \"Newcomer to Vancouver, loves hiking, coding, and Brazilian churches.\",\n  \"interests\": [\"uuid-category-1\", \"uuid-category-3\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/me",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						},
+						"description": "Updates the profile of the currently authenticated user."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for managing user profiles. Requires authentication.",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt_token}}",
+						"type": "string"
+					}
+				]
+			}
+		},
+		{
+			"name": "3. Categories",
+			"item": [
+				{
+					"name": "List All Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories"
+							]
+						},
+						"description": "Retrieves a list of all available interest categories."
+					},
+					"response": []
+				},
+				{
+					"name": "Add Category",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Sports\",\n  \"description\": \"Sports and physical activities\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for retrieving community categories.",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt_token}}",
+						"type": "string"
+					}
+				]
+			},
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Communities",
+			"item": [
+				{
+					"name": "Search and Filter Communities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/communities?category=42e83346-829c-477b-b28b-061784a63164&page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "volley",
+									"description": "Keyword search (name, description).",
+									"disabled": true
+								},
+								{
+									"key": "category",
+									"value": "42e83346-829c-477b-b28b-061784a63164",
+									"description": "Filter by category ID."
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Lists communities, with filtering and searching capabilities."
+					},
+					"response": []
+				},
+				{
+					"name": "Create a New Community",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"if (response.id) {",
+									"    pm.collectionVariables.set(\"communityId\", response.id);",
+									"    console.log(\"Community ID saved to collection variable: \" + response.id);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Downtown Volleyball Meetup\",\n  \"description\": \"Weekly volleyball games for all skill levels.\",\n  \"categoryId\": \"42e83346-829c-477b-b28b-061784a63164\",\n  \"location\": { \"lat\": 49.2700, \"lon\": -123.1100, \"address\": \"English Bay Beach Courts\" },\n  \"meetingSchedule\": \"Saturdays at 2 PM\",\n  \"contactEmail\": \"volley@example.com\",\n  \"bannerImageUrl\": \"https://example.com/url/to/optional/image.jpg\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/communities",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities"
+							]
+						},
+						"description": "Creates a new community. Requires authentication. The script automatically saves the new community's ID to the `communityId` collection variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Community Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/communities/{{communityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities",
+								"{{communityId}}"
+							]
+						},
+						"description": "Retrieves detailed information about a specific community. Uses the `communityId` variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Community Details",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Vancouver Brazilian Evangelical Church\",\n    \"description\": \"Updated description.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/communities/{{communityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities",
+								"{{communityId}}"
+							]
+						},
+						"description": "Updates details of a community. Requires Organizer/Admin role. Uses the `communityId` variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Community",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/communities/{{communityId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities",
+								"{{communityId}}"
+							]
+						},
+						"description": "Deletes a community. Requires Organizer/Admin role. Uses the `communityId` variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Join a Community",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/communities/{{communityId}}/join",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities",
+								"{{communityId}}",
+								"join"
+							]
+						},
+						"description": "Allows an authenticated user to join a community. Uses the `communityId` variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Leave a Community",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/communities/{{communityId}}/leave",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities",
+								"{{communityId}}",
+								"leave"
+							]
+						},
+						"description": "Allows an authenticated user to leave a community. Uses the `communityId` variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Communities",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/me/communities?page=1&limit=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								"me",
+								"communities"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						},
+						"description": "Retrieves a list of communities the authenticated user has joined."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for managing communities. All except GET requests require authentication.",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt_token}}",
+						"type": "string"
+					}
+				]
+			}
+		},
+		{
+			"name": "5. Events",
+			"item": [
+				{
+					"name": "List Events for a Community",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/communities/{{communityId}}/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities",
+								"{{communityId}}",
+								"events"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2025-01-01T00:00:00Z",
+									"disabled": true
+								},
+								{
+									"key": "endDate",
+									"value": "",
+									"disabled": true
+								}
+							]
+						},
+						"description": "Retrieves events for a specific community. Uses the `communityId` variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Create an Event for a Community",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"if (response.id) {",
+									"    pm.collectionVariables.set(\"eventId\", response.id);",
+									"    console.log(\"Event ID saved to collection variable: \" + response.id);",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Special Thanksgiving Dinner\",\n  \"description\": \"Join us for a special community dinner.\",\n  \"date\": \"2025-11-23T18:00:00Z\",\n  \"location\": { \"lat\": 49.2827, \"lon\": -123.1207, \"address\": \"Community Kitchen\" }\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/communities/{{communityId}}/events",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities",
+								"{{communityId}}",
+								"events"
+							]
+						},
+						"description": "Creates a new event for a community. Requires Organizer/Admin role. Uses `communityId`. The script automatically saves the new event's ID to the `eventId` collection variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Event Details",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/events/{{eventId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"events",
+								"{{eventId}}"
+							]
+						},
+						"description": "Retrieves details for a specific event. Uses the `eventId` variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Event Details",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"title\": \"Updated Event Name\",\n    \"description\": \"Updated description for the event.\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/events/{{eventId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"events",
+								"{{eventId}}"
+							]
+						},
+						"description": "Updates an event. Requires Organizer/Admin role. Uses the `eventId` variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Event",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/events/{{eventId}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"events",
+								"{{eventId}}"
+							]
+						},
+						"description": "Deletes an event. Requires Organizer/Admin role. Uses the `eventId` variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Attend an Event",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/events/{{eventId}}/attendance",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"events",
+								"{{eventId}}",
+								"attendance"
+							]
+						},
+						"description": "Allows an authenticated user to confirm attendance for an event. Uses the `eventId` variable."
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Attendance to an Event",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/events/{{eventId}}/attendance",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"events",
+								"{{eventId}}",
+								"attendance"
+							]
+						},
+						"description": "Allows an authenticated user to cancel their attendance. Uses the `eventId` variable."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints for managing events within a community. Most require authentication.",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt_token}}",
+						"type": "string"
+					}
+				]
+			}
+		},
+		{
+			"name": "6. Organizer Dashboard",
+			"item": [
+				{
+					"name": "List Communities Managed by Organizer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/organizer/communities",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"organizer",
+								"communities"
+							]
+						},
+						"description": "Retrieves a list of communities managed by the currently authenticated organizer."
+					},
+					"response": []
+				},
+				{
+					"name": "List Members of a Managed Community",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/communities/{{communityId}}/members",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"communities",
+								"{{communityId}}",
+								"members"
+							]
+						},
+						"description": "Retrieves a list of members for a community managed by the organizer. Uses the `communityId` variable."
+					},
+					"response": []
+				},
+				{
+					"name": "List Event Participants (for Organizers)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/events/{{eventId}}/participants",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"events",
+								"{{eventId}}",
+								"participants"
+							]
+						},
+						"description": "Lists users who have confirmed attendance to an event. Uses the `eventId` variable."
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints specific to organizer dashboards. All require authentication and an Organizer/Admin role.",
+			"auth": {
+				"type": "bearer",
+				"bearer": [
+					{
+						"key": "token",
+						"value": "{{jwt_token}}",
+						"type": "string"
+					}
+				]
+			}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000/api"
+		},
+		{
+			"key": "jwt_token",
+			"value": ""
+		},
+		{
+			"key": "communityId",
+			"value": "uuid-community-123"
+		},
+		{
+			"key": "eventId",
+			"value": "uuid-event-123"
+		},
+		{
+			"key": "userId",
+			"value": "uuid-user-123"
+		},
+		{
+			"key": "emailUserNormal",
+			"value": "kaynansc@gmail.com",
+			"type": "string"
+		},
+		{
+			"key": "passwordUserNormal",
+			"value": "securePassword123",
+			"type": "string"
+		},
+		{
+			"key": "emailUserAdmin",
+			"value": "admin@example.com",
+			"type": "string"
+		},
+		{
+			"key": "passwordUserAdmin",
+			"value": "admin123",
+			"type": "string"
+		}
+	]
+}
