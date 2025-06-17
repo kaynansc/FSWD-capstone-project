@@ -11,15 +11,6 @@ app.register(jwt, {
   secret: process.env.JWT_SECRET || 'your-secret-key'
 })
 
-// Add JWT types to FastifyRequest
-declare module 'fastify' {
-  interface FastifyRequest {
-    user: {
-      id: string
-      role: string
-    }
-  }
-}
 
 // Register error handler
 app.setErrorHandler(errorHandler)
