@@ -32,12 +32,10 @@ export class EventRepository {
     if (!event) return null
 
     if (userId) {
-      const participant = await prisma.eventParticipant.findUnique({
+      const participant = await prisma.eventParticipant.findFirst({
         where: {
-          eventId_userId: {
-            eventId: id,
-            userId
-          }
+          eventId: id,
+          userId
         }
       })
       return { ...event, isAttending: !!participant }
@@ -129,14 +127,14 @@ export class EventRepository {
   }
 
   async removeParticipant(eventId: string, userId: string): Promise<void> {
-    await prisma.eventParticipant.delete({
-      where: {
-        eventId_userId: {
-          eventId,
-          userId
-        }
-      }
+    const participant = await prisma.eventParticipant.findFirst({
+      where: { eventId, userId }
     })
+    if (participant) {
+      await prisma.eventParticipant.delete({
+        where: { id: participant.id }
+      })
+    }
   }
 
   async getParticipants(eventId: string, page = 1, limit = 10) {

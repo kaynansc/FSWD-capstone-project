@@ -83,13 +83,13 @@ export async function eventRoutes(app: FastifyInstance) {
   app.register(async function (app) {
     app.addHook('onRequest', authenticate)
 
-    app.post('/events/:id/participants', async (request, reply) => {
+    app.post('/events/:id/attendance', async (request, reply) => {
       const { id } = request.params as { id: string }
       await useCase.joinEvent(id, (request as AuthenticatedRequest).user.id)
       return reply.status(201).send({ message: 'Successfully joined the event' })
     })
 
-    app.delete('/events/:id/participants', async (request, reply) => {
+    app.delete('/events/:id/attendance', async (request, reply) => {
       const { id } = request.params as { id: string }
       await useCase.leaveEvent(id, (request as AuthenticatedRequest).user.id)
       return reply.status(204).send()
