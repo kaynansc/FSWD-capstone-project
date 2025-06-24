@@ -25,8 +25,8 @@ export class CommunityUseCase {
     return community
   }
 
-  async searchCommunities(params: SearchCommunityInput) {
-    return this.repository.search(params)
+  async searchCommunities(params: SearchCommunityInput, userId?: string) {
+    return this.repository.search(params, userId)
   }
 
   async updateCommunity(id: string, data: UpdateCommunityInput, userId: string) {

@@ -90,7 +90,7 @@ export class CommunityRepository {
     })
   }
 
-  async search(params: SearchCommunityInput) {
+  async search(params: SearchCommunityInput, userId?: string) {
     const { search, category, lat, lon, distance, page, limit } = params
     const skip = (page - 1) * limit
 
@@ -125,7 +125,15 @@ export class CommunityRepository {
             select: {
               memberships: true
             }
-          }
+          },
+          memberships: userId ? {
+            where: {
+              userId
+            },
+            select: {
+              id: true
+            }
+          } : undefined
         },
         skip,
         take: limit,
@@ -210,18 +218,29 @@ export class CommunityRepository {
     const [memberships, total] = await Promise.all([
       prisma.membership.findMany({
         where: { userId },
-        include: {
+        select: {
           community: {
             include: {
-              _count: {
-                select: {
-                  events: {
-                    where: {
-                      date: {
-                        gte: new Date()
-                      }
-                    }
+              category: true,
+              events: {
+                where: {
+                  date: {
+                    gte: new Date()
                   }
+                },
+                orderBy: {
+                  date: 'asc'
+                },
+                take: 1,
+                include: {
+                  participants: userId ? {
+                    where: {
+                      userId
+                    },
+                    select: {
+                      id: true
+                    }
+                  } : undefined
                 }
               }
             }
@@ -242,8 +261,16 @@ export class CommunityRepository {
       data: memberships.map(m => ({
         id: m.community.id,
         name: m.community.name,
-        upcomingEventCount: m.community._count.events
+        category: {
+          id: m.community.category.id,
+          name: m.community.category.name
+        },
+        nextEvent: m.community.events[0] ? {
+          title: m.community.events[0].title,
+          date: m.community.events[0].date,
+        } : null
       })),
+      upcomingEvents: memberships.map(m => m.community.events),
       pagination: {
         currentPage: page,
         totalPages: Math.ceil(total / limit),

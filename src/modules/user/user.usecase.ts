@@ -46,7 +46,12 @@ export class UserUseCase {
       name: user.name,
       email: user.email,
       bio: user.bio,
-      interests: user.interests.map(interest => interest.categoryId),
+      interests: user.interests.map(interest => {
+        return {
+          id: interest.category.id,
+          name: interest.category.name
+        }
+      }),
       role: user.role.name,
       createdAt: user.createdAt
     }

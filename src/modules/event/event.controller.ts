@@ -19,21 +19,26 @@ export async function eventRoutes(app: FastifyInstance) {
   const useCase = new EventUseCase(eventRepository, communityRepository)
 
   // Public routes
-  app.get<{ Querystring: SearchEventInput }>('/communities/:communityId/events', {
-    schema: {
-      querystring: zodToJsonSchema(searchEventSchema)
-    }
-  }, async (request, reply) => {
-    const { communityId } = request.params as { communityId: string }
-    const params = request.query
-    const result = await useCase.searchEvents(communityId, params, (request as AuthenticatedRequest).user?.id)
-    return reply.send(result)
-  })
+  app.register(async function (app) {
+    app.addHook('onRequest', authenticate)
 
-  app.get('/events/:id', async (request, reply) => {
-    const { id } = request.params as { id: string }
-    const event = await useCase.getEventById(id, (request as AuthenticatedRequest).user?.id)
-    return reply.send(event)
+    app.get<{ Querystring: SearchEventInput }>('/communities/:communityId/events', {
+      schema: {
+        querystring: zodToJsonSchema(searchEventSchema)
+      }
+    }, async (request, reply) => {
+      const { communityId } = request.params as { communityId: string }
+      const params = request.query
+      const result = await useCase.searchEvents(communityId, params, (request as AuthenticatedRequest).user?.id)
+      return reply.send(result)
+    })
+  
+    app.get('/events/:id', async (request, reply) => {
+      const { id } = request.params as { id: string }
+      const event = await useCase.getEventById(id, (request as AuthenticatedRequest).user?.id)
+      return reply.send(event)
+    })
+
   })
 
   // Protected routes (organizer/admin)

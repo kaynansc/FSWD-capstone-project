@@ -71,7 +71,15 @@ export class EventRepository {
             select: {
               participants: true
             }
-          }
+          },
+          participants: userId ? {
+            where: {
+              userId
+            },
+            select: {
+              id: true
+            }
+          } : undefined
         },
         skip,
         take: limit,
@@ -79,19 +87,6 @@ export class EventRepository {
       }),
       prisma.event.count({ where })
     ])
-
-    if (userId) {
-      const participants = await prisma.eventParticipant.findMany({
-        where: {
-          eventId: { in: events.map(e => e.id) },
-          userId
-        }
-      })
-      const participantMap = new Map(participants.map(p => [p.eventId, true]))
-      events.forEach(event => {
-        event.isAttending = participantMap.has(event.id)
-      })
-    }
 
     return {
       data: events,

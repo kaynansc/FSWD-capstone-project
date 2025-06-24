@@ -3,7 +3,8 @@ import { UnauthorizedError, ForbiddenError } from '@/shared/errors/app-error'
 
 export async function authenticate(request: FastifyRequest, reply: FastifyReply) {
   try {
-    await request.jwtVerify()
+    const decoded = await request.jwtVerify()
+    request.user = decoded as { id: string; role: string }
   } catch (err) {
     throw new UnauthorizedError()
   }

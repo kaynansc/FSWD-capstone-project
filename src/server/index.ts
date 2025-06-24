@@ -1,5 +1,6 @@
 import fastify from 'fastify'
 import jwt from '@fastify/jwt'
+import cors from '@fastify/cors'
 import { registerRoutes } from './routes'
 import { errorHandler } from '@/shared/middleware/error-handler'
 
@@ -7,10 +8,16 @@ const app = fastify({
   logger: true
 })
 
+// Register CORS
+app.register(cors, {
+  origin: ['*'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  credentials: true
+})
+
 app.register(jwt, {
   secret: process.env.JWT_SECRET || 'your-secret-key'
 })
-
 
 // Register error handler
 app.setErrorHandler(errorHandler)
