@@ -1,5 +1,5 @@
 import { prisma } from '@/shared/prisma/client'
-import { CreateCategoryInput, UpdateCategoryInput } from './category.schema'
+import { CreateCategoryInput, ListCategoriesInput, UpdateCategoryInput } from './category.schema'
 
 export class CategoryRepository {
   async create(data: CreateCategoryInput) {
@@ -44,7 +44,11 @@ export class CategoryRepository {
     })
   }
 
-  async findAll() {
+  async findAll(params: ListCategoriesInput) {
+    const { mostFeatured, page, limit } = params
+
+    console.log(params)
+    
     return prisma.category.findMany({
       include: {
         _count: {
@@ -54,9 +58,15 @@ export class CategoryRepository {
           }
         }
       },
-      orderBy: {
+      orderBy: mostFeatured ? {
+        communities: {
+          _count: 'desc'
+        }
+      } : {
         name: 'asc'
-      }
+      },
+      skip: (page - 1) * limit,
+      take: limit
     })
   }
 

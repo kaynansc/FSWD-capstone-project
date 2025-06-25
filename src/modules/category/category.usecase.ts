@@ -1,5 +1,5 @@
 import { CategoryRepository } from './category.repository'
-import { CreateCategoryInput, UpdateCategoryInput } from './category.schema'
+import { CreateCategoryInput, ListCategoriesInput, UpdateCategoryInput } from './category.schema'
 import { ConflictError, NotFoundError } from '@/shared/errors/app-error'
 
 export class CategoryUseCase {
@@ -22,8 +22,8 @@ export class CategoryUseCase {
     return category
   }
 
-  async listCategories() {
-    return this.repository.findAll()
+  async listCategories(params: ListCategoriesInput) {
+    return this.repository.findAll(params)
   }
 
   async updateCategory(id: string, data: UpdateCategoryInput) {

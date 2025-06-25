@@ -91,7 +91,7 @@ export class CommunityRepository {
   }
 
   async search(params: SearchCommunityInput, userId?: string) {
-    const { search, category, lat, lon, distance, page, limit } = params
+    const { search, category, lat, lon, distance, page, limit, mostFeatured } = params
     const skip = (page - 1) * limit
 
     const where: Prisma.CommunityWhereInput = {}
@@ -137,7 +137,11 @@ export class CommunityRepository {
         },
         skip,
         take: limit,
-        orderBy: {
+        orderBy: mostFeatured ? {
+          memberships: {
+            _count: 'desc'
+          }
+        } : {
           createdAt: 'desc'
         }
       }),

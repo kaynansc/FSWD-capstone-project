@@ -25,7 +25,8 @@ export const searchCommunitySchema = z.object({
   lon: z.number().optional(),
   distance: z.number().positive('Distance must be positive').optional(),
   page: z.number().int().positive('Page must be positive').default(1),
-  limit: z.number().int().positive('Limit must be positive').max(100, 'Limit must be at most 100').default(10)
+  limit: z.number().int().positive('Limit must be positive').max(100, 'Limit must be at most 100').default(10),
+  mostFeatured: z.boolean().optional().default(false)
 })
 
 export type CreateCommunityInput = z.infer<typeof createCommunitySchema>

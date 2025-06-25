@@ -1,7 +1,7 @@
 import { FastifyInstance } from 'fastify'
 import { CategoryUseCase } from './category.usecase'
 import { CategoryRepository } from './category.repository'
-import { createCategorySchema, updateCategorySchema, CreateCategoryInput, UpdateCategoryInput } from './category.schema'
+import { createCategorySchema, updateCategorySchema, CreateCategoryInput, UpdateCategoryInput, listCategoriesSchema, ListCategoriesInput } from './category.schema'
 import { zodToJsonSchema } from 'zod-to-json-schema'
 import { authenticate, authorizeRole } from '../auth/auth.middleware'
 
@@ -10,8 +10,14 @@ export async function categoryRoutes(app: FastifyInstance) {
   const useCase = new CategoryUseCase(repository)
 
   // Public routes
-  app.get('/', async (request, reply) => {
-    const categories = await useCase.listCategories()
+  app.get<{ Querystring: ListCategoriesInput }>('/', {
+    schema: {
+      querystring: zodToJsonSchema(listCategoriesSchema)
+    }
+  }, async (request, reply) => {
+    const params = request.query
+
+    const categories = await useCase.listCategories(params)
     return reply.send(categories)
   })
 
