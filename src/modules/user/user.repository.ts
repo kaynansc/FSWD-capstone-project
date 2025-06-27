@@ -2,6 +2,10 @@ import { prisma } from '@/shared/prisma/client'
 import { CreateUserInput, UpdateUserProfileInput } from './user.schema'
 
 export class UserRepository {
+  async getCountUsers() {
+    return prisma.user.count()
+  }
+
   async create(data: CreateUserInput & { roleId: string }) {
     return prisma.user.create({
       data,

@@ -63,7 +63,7 @@ export class CommunityUseCase {
     }
 
     // Check if community has members or events
-    if (community._count.memberships > 0 || community._count.events > 0) {
+    if (community._count.memberships > 0 || community.events.length > 0) {
       throw new ConflictError('Cannot delete community that has members or events')
     }
 

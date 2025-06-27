@@ -3,6 +3,10 @@ import { Event, EventParticipant } from '@prisma/client'
 import { CreateEventInput } from './event.schema'
 
 export class EventRepository {
+  async getCountEvents() {
+    return prisma.event.count()
+  }
+
   async create(data: CreateEventInput & { communityId: string }): Promise<Event> {
     return prisma.event.create({
       data: {

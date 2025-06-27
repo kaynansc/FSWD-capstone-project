@@ -7,7 +7,9 @@
     "dev": "tsx watch src/server/index.ts",
     "build": "tsc",
     "start": "node dist/server/index.js",
-    "setup": "tsx scripts/setup-roles.ts",
+    "setup:roles": "tsx scripts/setup-roles.ts",
+    "setup:categories": "tsx scripts/setup-categories.ts",
+    "setup:communities": "tsx scripts/setup-communities.ts",
     "create-admin": "tsx scripts/create-admin.ts"
   },
   "dependencies": {

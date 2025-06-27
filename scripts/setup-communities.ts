@@ -17,20 +17,26 @@ async function main() {
       throw new Error('No admin user found. Please run create-admin script first.')
     }
 
+    const categories = await prisma.category.findMany()
+    const categoryNameToId = categories.reduce((acc, category) => {
+      acc[category.name] = category.id
+      return acc
+    }, {} as Record<string, string>)
+
     const communities = [
       {
         name: 'Creative Arts Workshop',
         description: 'A vibrant community for artists to share their work, learn new techniques, and collaborate on projects. We host weekly workshops and monthly art exhibitions.',
-        categoryId: '472089a1-bbdf-4168-9053-54b181bb46c7', // Arts & Creativity
+        categoryId: categoryNameToId['Arts & Creativity'],
         location: 'Downtown Art Center, San Francisco',
         latitude: 37.7749,
         longitude: -122.4194,
-        organizerId: adminUser.id
+        organizerId: adminUser.id,
       },
       {
         name: 'Tech Innovators Hub',
         description: 'A community of tech enthusiasts, developers, and innovators. We organize coding workshops, hackathons, and tech talks to foster innovation and learning.',
-        categoryId: '3aa29cd0-5e64-4a57-8e5d-068f420892c1', // Technology
+        categoryId: categoryNameToId['Technology'],
         location: 'Innovation Center, Silicon Valley',
         latitude: 37.3875,
         longitude: -122.0575,
@@ -39,7 +45,7 @@ async function main() {
       {
         name: 'Wellness Warriors',
         description: 'Join us for yoga sessions, meditation workshops, and holistic health discussions. We focus on mental and physical well-being through community support.',
-        categoryId: 'a2877766-f6ef-4ec5-ad01-5fd9babfd4d1', // Health & Wellness
+        categoryId: categoryNameToId['Health & Wellness'],
         location: 'Harmony Wellness Center, Los Angeles',
         latitude: 34.0522,
         longitude: -118.2437,
@@ -48,7 +54,7 @@ async function main() {
       {
         name: 'Gaming League',
         description: 'A community for gamers of all levels. We organize tournaments, game nights, and discussions about the latest in gaming.',
-        categoryId: 'c654e045-aa9e-483a-9259-e43d130c9a5d', // Gaming
+        categoryId: categoryNameToId['Gaming'],
         location: 'GameHub Arena, Seattle',
         latitude: 47.6062,
         longitude: -122.3321,
@@ -57,7 +63,7 @@ async function main() {
       {
         name: 'Environmental Champions',
         description: 'Dedicated to environmental conservation and sustainability. We organize clean-up drives, workshops on sustainable living, and environmental awareness campaigns.',
-        categoryId: '776786f5-2dab-47e8-b871-44a9fd4edc4b', // Environmental
+        categoryId: categoryNameToId['Environmental'],
         location: 'Green Park Community Center, Portland',
         latitude: 45.5155,
         longitude: -122.6789,

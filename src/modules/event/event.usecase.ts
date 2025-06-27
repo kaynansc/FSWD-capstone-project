@@ -54,6 +54,14 @@ export class EventUseCase {
       throw new UnauthorizedError('Only community organizers can update events')
     }
 
+    if (data.location) {
+      const { address, lat, lon } = data.location
+      event.location = address
+      event.latitude = lat
+      event.longitude = lon
+      delete data.location
+    }
+
     return this.repository.update(id, data)
   }
 

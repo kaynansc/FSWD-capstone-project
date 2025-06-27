@@ -13,7 +13,8 @@ export const createCommunitySchema = z.object({
   location: locationSchema,
   meetingSchedule: z.string().min(3).max(255),
   contactEmail: z.string().email(),
-  bannerImageUrl: z.string().url().optional()
+  
+  imageUrl: z.string().url().optional()
 })
 
 export const updateCommunitySchema = createCommunitySchema.partial()

@@ -5,6 +5,7 @@ import { categoryRoutes } from '@/modules/category/category.controller'
 import { communityRoutes } from '@/modules/community/community.controller'
 import { authenticate } from '@/modules/auth/auth.middleware'
 import { eventRoutes } from '../modules/event/event.controller'
+import { platformRoutes } from '../modules/platform/platform.controller'
 
 export async function registerRoutes(app: FastifyInstance) {
   // Public routes
@@ -12,6 +13,7 @@ export async function registerRoutes(app: FastifyInstance) {
   app.register(categoryRoutes, { prefix: 'api/categories' })
   app.register(communityRoutes, { prefix: 'api/communities' })
   app.register(eventRoutes, { prefix: 'api' })
+  app.register(platformRoutes, { prefix: 'api/platform' })
   
   // Protected routes
   app.register(async function (app) {

@@ -51,6 +51,7 @@ model Community {
   id           String           @id @default(uuid())
   name         String           @db.VarChar(100)
   description  String
+  imageUrl    String?
   category     Category         @relation(fields: [categoryId], references: [id])
   categoryId   String
   location     String           @db.VarChar(255)
@@ -73,6 +74,7 @@ model Event {
   longitude    Float
   community    Community          @relation(fields: [communityId], references: [id])
   communityId  String
+  maxAttendees Int?
   participants EventParticipant[]
 }
 

@@ -12,7 +12,8 @@ export class CommunityRepository {
         location: data.location.address,
         latitude: data.location.lat,
         longitude: data.location.lon,
-        organizerId: data.organizerId
+        organizerId: data.organizerId,
+        imageUrl: data.imageUrl
       },
       include: {
         category: true,
@@ -170,6 +171,7 @@ export class CommunityRepository {
       updateData.latitude = data.location.lat
       updateData.longitude = data.location.lon
     }
+    if (data.imageUrl) updateData.imageUrl = data.imageUrl
 
     return prisma.community.update({
       where: { id },
@@ -199,6 +201,7 @@ export class CommunityRepository {
   }
 
   async join(communityId: string, userId: string) {
+
     return prisma.membership.create({
       data: {
         communityId,
@@ -265,6 +268,7 @@ export class CommunityRepository {
       data: memberships.map(m => ({
         id: m.community.id,
         name: m.community.name,
+        imageUrl: m.community.imageUrl,
         category: {
           id: m.community.category.id,
           name: m.community.category.name
@@ -282,5 +286,9 @@ export class CommunityRepository {
         limit
       }
     }
+  }
+
+  async getCountCommunities() {
+    return prisma.community.count()
   }
 } 

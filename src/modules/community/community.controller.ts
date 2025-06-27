@@ -16,22 +16,22 @@ export async function communityRoutes(app: FastifyInstance) {
   const repository = new CommunityRepository()
   const useCase = new CommunityUseCase(repository)
 
+  app.get<{ Querystring: SearchCommunityInput }>('/', {
+    schema: {
+      querystring: zodToJsonSchema(searchCommunitySchema)
+    }
+  }, async (request, reply) => {
+    const params = request.query
+    const userId = (request as AuthenticatedRequest).user?.id
+
+    const result = await useCase.searchCommunities(params, userId)
+    return reply.send(result)
+  })
+
 
   app.register(async function (app) {
     app.addHook('onRequest', authenticate)
     
-    app.get<{ Querystring: SearchCommunityInput }>('/', {
-      schema: {
-        querystring: zodToJsonSchema(searchCommunitySchema)
-      }
-    }, async (request, reply) => {
-      const params = request.query
-      const userId = (request as AuthenticatedRequest).user?.id
-  
-      const result = await useCase.searchCommunities(params, userId)
-      return reply.send(result)
-    })
-
     app.get('/:id', async (request, reply) => {
       const { id } = request.params as { id: string }
       const community = await useCase.getCommunityById(id, (request as AuthenticatedRequest).user?.id)
