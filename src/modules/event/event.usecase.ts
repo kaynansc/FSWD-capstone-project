@@ -89,6 +89,12 @@ export class EventUseCase {
       throw new NotFoundError('Event not found')
     }
 
+    const community = await this.communityRepository.findById(event.communityId, userId)
+
+    if (!community?.memberships?.length) {
+      throw new UnauthorizedError('Only community members can join events')
+    }
+
     const existingParticipant = await this.repository.findById(eventId, userId)
     if (existingParticipant?.isAttending) {
       throw new ConflictError('User is already participating in this event')
