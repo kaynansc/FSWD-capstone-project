@@ -41,7 +41,8 @@ export class CommunityRepository {
         organizer: {
           select: {
             id: true,
-            name: true
+            name: true,
+            phoneNumber: true,
           }
         },
         events: {
