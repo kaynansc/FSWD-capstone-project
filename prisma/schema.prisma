@@ -14,6 +14,7 @@ model User {
   email        String           @unique @db.VarChar(150)
   password     String           @db.VarChar(255)
   bio          String?
+  phoneNumber  String?
   role         Role             @relation(fields: [roleId], references: [id])
   roleId       String
   interests    UserInterest[]

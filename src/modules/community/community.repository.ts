@@ -65,14 +65,18 @@ export class CommunityRepository {
             memberships: true
           }
         },
-        memberships: userId ? {
-          where: {
-            userId
-          },
+        memberships: {
           select: {
-            id: true
+            user: {
+              select: {
+                id: true,
+                name: true,
+                bio: true,
+                phoneNumber: true,
+              }
+            }
           }
-        } : undefined
+        }
       }
     })
   }

@@ -9,6 +9,7 @@ export const createUserSchema = z.object({
 export const updateUserProfileSchema = z.object({
   name: z.string().min(3).optional(),
   bio: z.string().optional(),
+  phoneNumber: z.string().optional(),
   interests: z.array(z.string().uuid()).optional()
 })
 
