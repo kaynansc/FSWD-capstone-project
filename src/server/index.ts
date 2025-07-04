@@ -3,6 +3,7 @@ import jwt from '@fastify/jwt'
 import cors from '@fastify/cors'
 import { registerRoutes } from './routes'
 import { errorHandler } from '@/shared/middleware/error-handler'
+import { initializeChat } from '@/modules/chat/chat'
 
 const app = fastify({
   logger: true
@@ -25,6 +26,7 @@ app.setErrorHandler(errorHandler)
 async function bootstrap() {
   try {
     await registerRoutes(app)
+    initializeChat(app)
     await app.listen({ port: Number(process.env.PORT) || 3333, host: '0.0.0.0' })
   } catch (err) {
     app.log.error(err)

@@ -23,6 +23,7 @@ model User {
   communities  Community[]      @relation("OrganizerCommunities")
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
+  messages     Message[]
 }
 
 model Role {
@@ -63,6 +64,7 @@ model Community {
   events       Event[]
   memberships  Membership[]
   createdAt    DateTime         @default(now())
+  messages     Message[]
 }
 
 model Event {
@@ -95,4 +97,14 @@ model EventParticipant {
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   rsvpAt    DateTime @default(now())
+}
+
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+  community Community @relation(fields: [communityId], references: [id])
+  communityId String
+  sender User @relation(fields: [senderId], references: [id])
+  senderId String
 }
